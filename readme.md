@@ -5,6 +5,19 @@
 This allows for html files which are self contained.
 For whatever reason no Markdown to HTML tool seems to be be able to do so.
 
+Replaces
+
+```html
+<img src="media/image.png">
+```
+
+into
+
+```html
+<img src="data:image/png;base64,iVBORw0K…">
+```
+
+
 ## Usage
 
 ```plaintext
