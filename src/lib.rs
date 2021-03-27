@@ -89,7 +89,7 @@ pub fn html_inline(html: &str) -> Result<String, Box<dyn Error>> {
 }
 
 #[test]
-fn replaces_img_file() {
+fn inline_img_file_works() {
     let html = r#"<div><img class="something" src="testdata/white-pixel.png"></img></div>"#;
     let result = html_inline(html).unwrap();
     assert!(result.starts_with(r#"<div><img class="something" src="data:image/png;base64,"#));
@@ -97,7 +97,7 @@ fn replaces_img_file() {
 }
 
 #[test]
-fn replaces_img_https() {
+fn inline_web_img_works() {
     let html = r#"<div><img class="something" src="https://via.placeholder.com/1x1"></img></div>"#;
     let result = html_inline(html).unwrap();
     assert!(result.starts_with(r#"<div><img class="something" src="data:image/png;base64,"#));
@@ -105,14 +105,14 @@ fn replaces_img_https() {
 }
 
 #[test]
-fn replaces_stylesheet_file() {
+fn inline_stylesheet_file_works() {
     let html = r#"<head><link rel="stylesheet" href="testdata/simple.css" /></head>"#;
     let result = html_inline(html).unwrap();
     assert_eq!(result, r#"<head><style>h1 { color: blue; }</style></head>"#);
 }
 
 #[test]
-fn replaces_stylesheet_https() {
+fn inline_web_stylesheet_works() {
     let html = r#"<head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojify.js/1.1.0/css/basic/emojify.min.css" integrity="sha256-UOrvMOsSDSrW6szVLe8ZDZezBxh5IoIfgTwdNDgTjiU=" crossorigin="anonymous" /></head>"#;
     let result = html_inline(html).unwrap();
     assert!(result.starts_with("<head><style>"));
