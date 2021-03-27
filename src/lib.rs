@@ -2,7 +2,7 @@ use std::error::Error;
 use std::fs;
 use std::io::{Cursor, Read};
 
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 
@@ -52,6 +52,33 @@ pub fn html_inline(html: &str) -> Result<String, Box<dyn Error>> {
 
                 writer.write_event(Event::Start(elem))?;
             }
+            Event::Empty(ref e)
+                if e.name() == b"link"
+                    && e.attributes().any(|a| {
+                        println!("i saw attributes {:?}", a);
+                        a.map_or(false, |a| {
+                            a.key == b"rel" && a.value.to_vec() == b"stylesheet"
+                        })
+                    }) =>
+            {
+                for attribute in e.attributes() {
+                    let attribute = attribute?;
+                    if let b"href" = attribute.key {
+                        let body = if attribute.value.starts_with(b"http://")
+                            || attribute.value.starts_with(b"https://")
+                        {
+                            let url = String::from_utf8(attribute.value.to_vec())?;
+                            ureq::get(&url).call()?.into_string()?
+                        } else {
+                            let path = String::from_utf8(attribute.value.to_vec())?;
+                            fs::read_to_string(path)?
+                        };
+                        writer.write_event(Event::Start(BytesStart::borrowed_name(b"style")))?;
+                        writer.write_event(Event::Text(BytesText::from_plain_str(body.trim())))?;
+                        writer.write_event(Event::End(BytesEnd::borrowed(b"style")))?;
+                    }
+                }
+            }
             e => writer.write_event(&e)?,
         }
         buf.clear();
@@ -75,4 +102,19 @@ fn replaces_img_https() {
     let result = html_inline(html).unwrap();
     assert!(result.starts_with(r#"<div><img class="something" src="data:image/png;base64,"#));
     assert!(result.ends_with(r#"="></img></div>"#));
+}
+
+#[test]
+fn replaces_stylesheet_file() {
+    let html = r#"<head><link rel="stylesheet" href="testdata/simple.css" /></head>"#;
+    let result = html_inline(html).unwrap();
+    assert_eq!(result, r#"<head><style>h1 { color: blue; }</style></head>"#);
+}
+
+#[test]
+fn replaces_stylesheet_https() {
+    let html = r#"<head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojify.js/1.1.0/css/basic/emojify.min.css" integrity="sha256-UOrvMOsSDSrW6szVLe8ZDZezBxh5IoIfgTwdNDgTjiU=" crossorigin="anonymous" /></head>"#;
+    let result = html_inline(html).unwrap();
+    assert!(result.starts_with("<head><style>"));
+    assert!(result.ends_with("</style></head>"));
 }
