@@ -1,3 +1,6 @@
+Check out https://github.com/makovich/inliners
+
+
 # HTML Image Inline base64
 
 > Reads an html file and inlines all the images with base64
