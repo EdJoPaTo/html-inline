@@ -1,4 +1,3 @@
-use std::error::Error;
 use std::fs;
 use std::io::{Cursor, Read};
 
@@ -11,7 +10,7 @@ use quick_xml::Writer;
 /// # Errors
 ///
 /// Will return `Err` when external resources could not be loaded or the input is not valid html.
-pub fn html_inline(html: &str) -> Result<String, Box<dyn Error>> {
+pub fn html_inline(html: &str) -> anyhow::Result<String> {
     let mut reader = Reader::from_str(html);
     reader.trim_text(true);
     let mut writer = Writer::new(Cursor::new(Vec::new()));
