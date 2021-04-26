@@ -131,13 +131,13 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           cd target/${{ matrix.triple }}/release
-          tar -czvf ../../../html-image-inline-base64-${{ matrix.triple }}.tar.gz html-image-inline-base64
+          tar -czvf ../../../html-inline-${{ matrix.triple }}.tar.gz html-inline
           cd -
       - name: Pack release (windows)
         if: runner.os == 'Windows'
         run: |
           cd target/${{ matrix.triple }}/release
-          7z a ../../../html-image-inline-base64-${{ matrix.triple }}.zip html-image-inline-base64.exe
+          7z a ../../../html-inline-${{ matrix.triple }}.zip html-inline.exe
           cd -
 
       - name: Upload Artifact

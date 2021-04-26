@@ -1,7 +1,7 @@
 Check out https://github.com/makovich/inliners
 
 
-# HTML Image Inline base64
+# HTML Inline
 
 > Reads an html file and inlines all the images with base64
 
@@ -25,11 +25,11 @@ into
 
 ```plaintext
 HTML Image Inline base64 0.1.0
-EdJoPaTo <html-image-inline-base64-rust@edjopato.de>
+EdJoPaTo <html-inline-rust@edjopato.de>
 Reads an html file and inlines all the images with base64
 
 USAGE:
-    html-image-inline-base64 [OPTIONS] <FILE>
+    html-inline [OPTIONS] <FILE>
 
 FLAGS:
     -h, --help       Prints help information
