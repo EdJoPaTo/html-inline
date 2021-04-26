@@ -19,37 +19,10 @@ pub fn html_inline(html: &str) -> anyhow::Result<String> {
         match reader.read_event(&mut buf)? {
             Event::Eof => break,
             Event::Start(ref e) if e.name() == b"img" => {
-                let mut elem = BytesStart::owned_name("img");
-
-                for attribute in e.attributes() {
-                    let attribute = attribute?;
-                    match attribute.key {
-                        b"src" => {
-                            if attribute.value.starts_with(b"data:image/") {
-                                elem.push_attribute(attribute);
-                            } else if attribute.value.starts_with(b"http://")
-                                || attribute.value.starts_with(b"https://")
-                            {
-                                let url = String::from_utf8(attribute.value.to_vec())?;
-                                let mut img_data = Vec::new();
-                                ureq::get(&url)
-                                    .call()?
-                                    .into_reader()
-                                    .read_to_end(&mut img_data)?;
-                                let base64 = image_base64_wasm::vec_to_base64(img_data);
-                                elem.push_attribute(("src", base64.as_ref()));
-                            } else {
-                                let path = String::from_utf8(attribute.value.to_vec())?;
-                                let img_data = fs::read(path)?;
-                                let base64 = image_base64_wasm::vec_to_base64(img_data);
-                                elem.push_attribute(("src", base64.as_ref()));
-                            }
-                        }
-                        _ => elem.push_attribute(attribute),
-                    }
-                }
-
-                writer.write_event(Event::Start(elem))?;
+                writer.write_event(Event::Start(replace_img(e)?))?;
+            }
+            Event::Empty(ref e) if e.name() == b"img" => {
+                writer.write_event(Event::Empty(replace_img(e)?))?;
             }
             Event::Empty(ref e)
                 if e.name() == b"link"
@@ -87,12 +60,57 @@ pub fn html_inline(html: &str) -> anyhow::Result<String> {
     Ok(String::from_utf8(result)?)
 }
 
+fn replace_img(e: &BytesStart) -> anyhow::Result<quick_xml::events::BytesStart<'static>> {
+    let mut elem = BytesStart::owned_name("img");
+
+    for attribute in e.attributes() {
+        let attribute = attribute?;
+        match attribute.key {
+            b"src" => {
+                if attribute.value.starts_with(b"data:image/") {
+                    elem.push_attribute(attribute);
+                } else if attribute.value.starts_with(b"http://")
+                    || attribute.value.starts_with(b"https://")
+                {
+                    let url = String::from_utf8(attribute.value.to_vec())?;
+                    let mut img_data = Vec::new();
+                    ureq::get(&url)
+                        .call()?
+                        .into_reader()
+                        .read_to_end(&mut img_data)?;
+                    let base64 = image_base64_wasm::vec_to_base64(img_data);
+                    elem.push_attribute(("src", base64.as_ref()));
+                } else {
+                    let path = String::from_utf8(attribute.value.to_vec())?;
+                    let img_data = fs::read(path)?;
+                    let base64 = image_base64_wasm::vec_to_base64(img_data);
+                    elem.push_attribute(("src", base64.as_ref()));
+                }
+            }
+            _ => elem.push_attribute(attribute),
+        }
+    }
+
+    Ok(elem)
+}
+
 #[test]
-fn inline_img_file_works() {
+fn inline_img_start_file_works() {
     let html = r#"<div><img class="something" src="testdata/white-pixel.png"></img></div>"#;
     let result = html_inline(html).unwrap();
     assert!(result.starts_with(r#"<div><img class="something" src="data:image/png;base64,"#));
     assert!(result.ends_with(r#"="></img></div>"#));
+}
+
+#[test]
+fn inline_img_empty_file_works() {
+    let html = r#"<div><img class="something" src="testdata/white-pixel.png" /></div>"#;
+    let result = html_inline(html).unwrap();
+    assert!(result.starts_with(r#"<div><img class="something" src="data:image/png;base64,"#));
+
+    let end = &result[result.len() - 20..];
+    println!("end {}", end);
+    assert!(result.ends_with(r#"="/></div>"#));
 }
 
 #[test]
