@@ -24,7 +24,7 @@ into
 ## Usage
 
 ```plaintext
-HTML Image Inline base64 0.1.0
+HTML Inline 0.2.0
 EdJoPaTo <html-inline-rust@edjopato.de>
 Reads an html file and inlines all the images with base64
 
