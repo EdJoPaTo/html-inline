@@ -1,9 +1,11 @@
 [package]
 name = "html-inline"
 description = "Reads an html file and inlines all the images with base64"
+keywords = ["html", "inline", "image", "base64", "css"]
 version = "0.2.0"
 license = "MIT"
 authors = ["EdJoPaTo <html-inline-rust@edjopato.de>"]
+repository = "https://github.com/EdJoPaTo/html-inline"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
