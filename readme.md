@@ -1,6 +1,3 @@
-Check out https://github.com/makovich/inliners
-
-
 # HTML Inline
 
 > Reads an html file and inlines all the images with base64
@@ -41,3 +38,7 @@ OPTIONS:
 ARGS:
     <FILE>    Path to html file
 ```
+
+## Alternatives
+
+Maybe also checkout https://github.com/makovich/inliners.
