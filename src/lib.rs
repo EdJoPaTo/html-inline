@@ -119,13 +119,11 @@ fn inline_img_unknown_stays_the_same() {
     let (result, errors) = html_inline(html).unwrap();
     println!("result {}", result);
     assert_eq!(
-        errors,
-        &["image testdata/non-existant.png: No such file or directory (os error 2)"]
-    );
-    assert_eq!(
         result,
         r#"<html><head></head><body><div><img class="something" src="testdata/non-existant.png"></div></body></html>"#
     );
+    assert_eq!(errors.len(), 1);
+    assert!(errors[0].starts_with("image testdata/non-existant.png: "));
 }
 
 #[test]
