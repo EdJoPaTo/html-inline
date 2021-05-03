@@ -10,6 +10,10 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+default = ["cli"]
+cli = ["clap"]
+
 [dependencies]
 anyhow = "1"
 image-base64-wasm = "0.6"
@@ -19,3 +23,4 @@ ureq = "2"
 [dependencies.clap]
 version = "2"
 features = ["wrap_help"]
+optional = true

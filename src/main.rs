@@ -1,8 +1,12 @@
+#[cfg(feature = "cli")]
 use std::fs;
 
+#[cfg(feature = "cli")]
 mod cli;
+#[cfg(feature = "cli")]
 mod lib;
 
+#[cfg(feature = "cli")]
 fn main() {
     let matches = cli::build().get_matches();
 
@@ -21,4 +25,9 @@ fn main() {
     } else {
         println!("{}", new_content);
     }
+}
+
+#[cfg(not(feature = "cli"))]
+fn main() {
+    panic!("cli was disabled");
 }
