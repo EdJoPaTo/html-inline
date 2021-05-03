@@ -18,7 +18,12 @@ fn main() {
 
     let html_content = fs::read_to_string(html_path).expect("failed to read html file");
 
-    let new_content = lib::html_inline(&html_content).expect("failed to inline external resources");
+    let (new_content, skipped_sources) =
+        lib::html_inline(&html_content).expect("failed to inline external resources");
+
+    for s in skipped_sources {
+        eprintln!("SKIPPED {}", s);
+    }
 
     if let Some(output_path) = output_path {
         fs::write(output_path, new_content).expect("failed to write output html to file");
