@@ -16,8 +16,9 @@ cli = ["clap"]
 
 [dependencies]
 anyhow = "1"
+html5ever = "0.25"
 image-base64-wasm = "0.6"
-quick-xml = "0.22"
+kuchiki = "0.8"
 ureq = "2"
 
 [dependencies.clap]
