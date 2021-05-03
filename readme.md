@@ -1,9 +1,8 @@
 # HTML Inline
 
-> Reads an html file and inlines all the images with base64
+> Reads an HTML file and inlines all the images and stylesheets
 
-This allows for html files which are self contained.
-For whatever reason no Markdown to HTML tool seems to be be able to do so.
+This allows for HTML files which are self-contained.
 
 Replaces
 
@@ -21,9 +20,9 @@ into
 ## Usage
 
 ```plaintext
-HTML Inline 0.2.0
+HTML Inline 0.3.0
 EdJoPaTo <html-inline-rust@edjopato.de>
-Reads an html file and inlines all the images with base64
+Reads an HTML file and inlines all the images and stylesheets
 
 USAGE:
     html-inline [OPTIONS] <FILE>
@@ -41,4 +40,6 @@ ARGS:
 
 ## Alternatives
 
-Maybe also checkout https://github.com/makovich/inliners.
+- https://github.com/Y2Z/monolith
+- https://github.com/8176135/inline-assets-rs
+- https://github.com/makovich/inliners

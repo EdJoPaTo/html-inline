@@ -1,6 +1,6 @@
 [package]
 name = "html-inline"
-description = "Reads an html file and inlines all the images with base64"
+description = "Reads an HTML file and inlines all the images and stylesheets"
 keywords = ["html", "inline", "image", "base64", "css"]
 version = "0.3.0"
 license = "MIT"
