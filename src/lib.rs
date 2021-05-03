@@ -48,8 +48,11 @@ pub fn html_inline(html: &str) -> anyhow::Result<(String, Vec<String>)> {
         if !src.starts_with("data:image/") {
             match load_vec(src) {
                 Ok(img_data) => {
-                    let base64 = image_base64_wasm::vec_to_base64(img_data);
-                    *src = base64;
+                    if let Some(base64) = image_base64::to_base64_from_memory(&img_data) {
+                        *src = base64;
+                    } else {
+                        failed_sources.push(format!("image {}: failed to encode as base64", src));
+                    }
                 }
                 Err(err) => failed_sources.push(format!("image {}: {}", src, err)),
             }

@@ -21,7 +21,6 @@ lto = true
 [dependencies]
 anyhow = "1"
 html5ever = "0.25"
-image-base64-wasm = "0.6"
 kuchiki = "0.8"
 ureq = "2"
 
@@ -29,3 +28,7 @@ ureq = "2"
 version = "2"
 features = ["wrap_help"]
 optional = true
+
+[dependencies.image-base64]
+git = "https://github.com/SaiintBrisson/image-base64-rs"
+branch = "master"
