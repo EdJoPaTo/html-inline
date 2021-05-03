@@ -2,7 +2,7 @@
 name = "html-inline"
 description = "Reads an HTML file and inlines all the images and stylesheets"
 keywords = ["html", "inline", "image", "base64", "css"]
-version = "0.3.0"
+version = "0.4.0"
 license = "MIT"
 authors = ["EdJoPaTo <html-inline-rust@edjopato.de>"]
 repository = "https://github.com/EdJoPaTo/html-inline"
